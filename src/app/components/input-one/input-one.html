@@ -1,25 +1,10 @@
-<div class="wrapper">
-  <form class="example-form">
-    <div class="field-title">Input values from the right</div>
-    <mat-form-field class="example-full-width time-input">
-      <input
-        type="text"
-        [placeholder]="blankTime"
-        aria-label="Number"
-        matInput
-        [formControl]="inputOne"
-      />
-    </mat-form-field>
-
-    <div class="field-title">Input values at specific indexes</div>
-    <mat-form-field class="example-full-width time-input">
-      <input
-        type="text"
-        [placeholder]="blankTime"
-        aria-label="Number"
-        matInput
-        [formControl]="inputTwo"
-      />
-    </mat-form-field>
-  </form>
-</div>
+<div class="field-title">Input values from the right</div>
+<mat-form-field class="example-full-width time-input">
+  <input
+    type="text"
+    [placeholder]="blankTime"
+    aria-label="Number"
+    matInput
+    [formControl]="inputControl"
+  />
+</mat-form-field>

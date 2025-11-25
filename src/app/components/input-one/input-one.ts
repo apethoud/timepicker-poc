@@ -1,35 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AsyncPipe } from '@angular/common';
 import { distinctUntilChanged } from 'rxjs';
 
 const TIME_STRING_LENGTH = 5;
 
 @Component({
   selector: 'app-input-one',
-  imports: [
-    RouterOutlet,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
-    AsyncPipe,
-  ],
+  imports: [RouterOutlet, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
   templateUrl: './input-one.html',
   styleUrl: './input-one.css',
 })
 export class InputOne implements OnInit {
   readonly blankTime = '00:00';
-  inputOne = new FormControl(this.blankTime);
-  inputTwo = new FormControl(this.blankTime);
+  inputControl = new FormControl(this.blankTime);
 
   ngOnInit() {
-    const ctrl = this.inputOne.valueChanges
+    const ctrl = this.inputControl.valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((value: string | null) => {
         this._handleValueChange(value);
@@ -47,7 +36,7 @@ export class InputOne implements OnInit {
         : this._handleSubtractedCharacter(value);
 
     if (newValue !== value) {
-      this.inputOne.setValue(newValue, { emitEvent: false });
+      this.inputControl.setValue(newValue, { emitEvent: false });
     }
   }
 
