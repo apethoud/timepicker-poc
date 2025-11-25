@@ -43,6 +43,12 @@ export class InputTwo implements OnInit {
   handleKeyDown(event: KeyboardEvent) {
     const inputElement = event.target as HTMLInputElement;
 
+    if (event.key === 'ArrowUp') {
+      this._selectFirstIndex(inputElement);
+    }
+    if (event.key === 'ArrowDown') {
+      this._selectLastIndex(inputElement);
+    }
     if (event.key === 'ArrowRight') {
       this._selectNextIndex(inputElement);
     }
@@ -57,6 +63,11 @@ export class InputTwo implements OnInit {
 
   private _selectFirstIndex(el: HTMLInputElement): void {
     this.selectedIndex = 0;
+    el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
+  }
+
+  private _selectLastIndex(el: HTMLInputElement): void {
+    this.selectedIndex = LAST_EDITABLE_INDEX;
     el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
   }
 
