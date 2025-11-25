@@ -8,10 +8,8 @@ import { distinctUntilChanged } from 'rxjs';
 const COLON_INDEX = 2;
 const LAST_EDITABLE_INDEX = 4;
 
-// On arrow key press (left or right only), the highlight should move to the appropriate adjacent character (skipping the colon)
 // Handle the backspace key press appropriately, undoing the previous change (if any) and moving the highlight to the previous character (skipping the colon)
 // Constrain the allowed characters for each index, such that the time is always valid:
-//   For all of them: Only numeric characters
 //   First: Either 0 or 1
 //   Second: 0-2 always, 3-9 if First is 0
 //   Third: 0-5
@@ -56,7 +54,14 @@ export class InputTwo implements OnInit {
       this._selectPreviousIndex(inputElement);
     }
 
-    if (!this._isNumberKey(event.code)) {
+    if (
+      !this._isNumberKey(event.code) ||
+      this._doesNumberInsertionResultInAnInvalidTime(
+        event.key,
+        this.selectedIndex,
+        this.inputControl.value
+      )
+    ) {
       event.preventDefault();
     }
   }
@@ -114,4 +119,22 @@ export class InputTwo implements OnInit {
   private _isNumberKey(keyCode: string) {
     return keyCode.includes('Digit');
   }
+
+  private _doesNumberInsertionResultInAnInvalidTime(
+    numString: string,
+    insertionIndex: number,
+    currentInputValue: string | null
+  ): boolean {
+    const num = parseInt(numString);
+    if (insertionIndex === 0 && num > 1) {
+      return true;
+    }
+
+    return false;
+  }
+
+  //   First: Either 0 or 1
+  //   Second: 0-2 always, 3-9 if First is 0
+  //   Third: 0-5
+  //   Fourth: 0-9
 }
