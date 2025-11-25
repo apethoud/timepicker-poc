@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { timeOptions } from './times';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AsyncPipe } from '@angular/common';
-import { distinctUntilChanged, map, Observable, startWith } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs';
+
+const TIME_STRING_LENGTH = 5;
 
 @Component({
   selector: 'app-root',
@@ -23,9 +24,8 @@ import { distinctUntilChanged, map, Observable, startWith } from 'rxjs';
   styleUrl: './app.css',
 })
 export class App implements OnInit {
-  myControl = new FormControl('');
-  options: string[] = timeOptions;
-  filteredOptions?: string[];
+  readonly blankTime = '00:00';
+  myControl = new FormControl(this.blankTime);
 
   ngOnInit() {
     const ctrl = this.myControl.valueChanges
@@ -35,31 +35,34 @@ export class App implements OnInit {
       });
   }
 
-  private _handleValueChange(value: string | null) {
-    console.log('value: ', value);
-
-    if (value === null) {
+  private _handleValueChange(value: string | null): void {
+    if (value === null || value.length === TIME_STRING_LENGTH) {
       return;
     }
 
-    this.filteredOptions = this._filter(value);
+    const newValue =
+      value.length > TIME_STRING_LENGTH
+        ? this._handleAddedCharacter(value)
+        : this._handleSubtractedCharacter(value);
 
-    // const formatted = this.formatEnteredValue(value) // add the colon
-    // if (formatted !== value) {
-    //   ctrl.setValue(formatted, { emitEvent: false }); // show it in the view without calling this function again
-    // }
+    if (newValue !== value) {
+      this.myControl.setValue(newValue, { emitEvent: false });
+    }
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    const filteredOptions = this.options.filter((option) =>
-      option.toLowerCase().includes(filterValue)
-    );
-    const formatted = filteredOptions.map((opt) => {
-      const optArray = opt.split('');
-      optArray.splice(2, 0, ':');
-      return optArray.join('');
-    });
-    return formatted;
+  private _handleAddedCharacter(value: string): string {
+    const valArray = value.split('');
+    valArray.splice(2, 1);
+    valArray.shift();
+    valArray.splice(2, 0, ':');
+    return valArray.join('');
+  }
+
+  private _handleSubtractedCharacter(value: string): string {
+    const valArray = value.split('');
+    valArray.splice(2, 1);
+    valArray.unshift('0');
+    valArray.splice(2, 0, ':');
+    return valArray.join('');
   }
 }
