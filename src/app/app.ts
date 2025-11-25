@@ -25,10 +25,11 @@ const TIME_STRING_LENGTH = 5;
 })
 export class App implements OnInit {
   readonly blankTime = '00:00';
-  myControl = new FormControl(this.blankTime);
+  inputOne = new FormControl(this.blankTime);
+  inputTwo = new FormControl(this.blankTime);
 
   ngOnInit() {
-    const ctrl = this.myControl.valueChanges
+    const ctrl = this.inputOne.valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((value: string | null) => {
         this._handleValueChange(value);
@@ -46,7 +47,7 @@ export class App implements OnInit {
         : this._handleSubtractedCharacter(value);
 
     if (newValue !== value) {
-      this.myControl.setValue(newValue, { emitEvent: false });
+      this.inputOne.setValue(newValue, { emitEvent: false });
     }
   }
 
