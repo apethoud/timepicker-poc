@@ -44,11 +44,9 @@ export class InputTwo implements OnInit {
     const inputElement = event.target as HTMLInputElement;
 
     if (event.key === 'ArrowRight') {
-      event.preventDefault();
       this._selectNextIndex(inputElement);
     }
     if (event.key === 'ArrowLeft') {
-      event.preventDefault();
       this._selectPreviousIndex(inputElement);
     }
 
