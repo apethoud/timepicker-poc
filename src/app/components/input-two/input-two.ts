@@ -39,6 +39,11 @@ export class InputTwo implements OnInit {
   }
 
   handleKeyDown(event: KeyboardEvent) {
+    if (!this.inputControl.value) {
+      console.log('Error: No input value');
+      return;
+    }
+
     const inputElement = event.target as HTMLInputElement;
 
     if (event.key === 'ArrowUp') {
@@ -56,14 +61,12 @@ export class InputTwo implements OnInit {
 
     if (
       !this._isNumberKey(event.code) ||
-      this._doesNumberInsertionResultInAnInvalidTime(
-        event.key,
-        this.selectedIndex,
-        this.inputControl.value
-      )
+      this._doesNumberInsertionResultInAnUnreconcilableInvalidTime(event.key, this.selectedIndex)
     ) {
       event.preventDefault();
     }
+
+    // changeSecondDigitToValidValueIfFirstDigitIsChanged
   }
 
   private _selectFirstIndex(el: HTMLInputElement): void {
@@ -120,13 +123,16 @@ export class InputTwo implements OnInit {
     return keyCode.includes('Digit');
   }
 
-  private _doesNumberInsertionResultInAnInvalidTime(
+  private _doesNumberInsertionResultInAnUnreconcilableInvalidTime(
     numString: string,
-    insertionIndex: number,
-    currentInputValue: string | null
+    insertionIndex: number
   ): boolean {
     const num = parseInt(numString);
     if (insertionIndex === 0 && num > 1) {
+      return true;
+    }
+
+    if (insertionIndex === 3 && num > 5) {
       return true;
     }
 
