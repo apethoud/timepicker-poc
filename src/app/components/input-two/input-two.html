@@ -6,5 +6,7 @@
     aria-label="Number"
     matInput
     [formControl]="inputControl"
+    (focus)="handleInputFocus($event)"
+    (input)="handleInputInput($event)"
   />
 </mat-form-field>

@@ -5,7 +5,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { distinctUntilChanged } from 'rxjs';
 
-const TIME_STRING_LENGTH = 5;
+const COLON_INDEX = 2;
+const LAST_EDITABLE_INDEX = 4;
+
+// On select, highlight the first character in the string
+// On text change, the added character should replace the highlighted character, then the next character should be selected (skipping the colon)
+// On arrow key press (left or right only), the highlight should move to the appropriate adjacent character (skipping the colon)
+// Handle the backspace key press appropriately, undoing the previous change (if any) and moving the highlight to the previous character (skipping the colon)
+// Constrain the allowed characters for each index, such that the time is always valid:
+//   For all of them: Only numeric characters
+//   First: Either 0 or 1
+//   Second: 0-2 always, 3-9 if First is 0
+//   Third: 0-5
+//   Fourth: 0-9
 
 @Component({
   selector: 'app-input-two',
@@ -16,43 +28,37 @@ const TIME_STRING_LENGTH = 5;
 export class InputTwo implements OnInit {
   readonly blankTime = '00:00';
   inputControl = new FormControl(this.blankTime);
+  selectedIndex: number | null = null;
 
-  ngOnInit() {
-    const ctrl = this.inputControl.valueChanges
-      .pipe(distinctUntilChanged())
-      .subscribe((value: string | null) => {
-        this._handleValueChange(value);
-      });
+  ngOnInit() {}
+
+  handleInputFocus(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    this._selectNextIndex(inputElement);
   }
 
-  private _handleValueChange(value: string | null): void {
-    if (value === null || value.length === TIME_STRING_LENGTH) {
+  handleInputInput(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    this._selectNextIndex(inputElement);
+  }
+
+  private _selectNextIndex(el: HTMLInputElement): void {
+    if (this.selectedIndex === null) {
+      this.selectedIndex = 0;
+      el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
       return;
     }
 
-    const newValue =
-      value.length > TIME_STRING_LENGTH
-        ? this._handleAddedCharacter(value)
-        : this._handleSubtractedCharacter(value);
-
-    if (newValue !== value) {
-      this.inputControl.setValue(newValue, { emitEvent: false });
+    if (this.selectedIndex === COLON_INDEX - 1) {
+      this.selectedIndex = this.selectedIndex + 2;
+      el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
+      return;
     }
-  }
 
-  private _handleAddedCharacter(value: string): string {
-    const valArray = value.split('');
-    valArray.splice(2, 1);
-    valArray.shift();
-    valArray.splice(2, 0, ':');
-    return valArray.join('');
-  }
-
-  private _handleSubtractedCharacter(value: string): string {
-    const valArray = value.split('');
-    valArray.splice(2, 1);
-    valArray.unshift('0');
-    valArray.splice(2, 0, ':');
-    return valArray.join('');
+    if (this.selectedIndex < LAST_EDITABLE_INDEX) {
+      this.selectedIndex++;
+      el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
+      return;
+    }
   }
 }
