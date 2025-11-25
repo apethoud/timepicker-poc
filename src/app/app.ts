@@ -52,7 +52,14 @@ export class App implements OnInit {
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-
-    return this.options.filter((option) => option.toLowerCase().includes(filterValue));
+    const filteredOptions = this.options.filter((option) =>
+      option.toLowerCase().includes(filterValue)
+    );
+    const formatted = filteredOptions.map((opt) => {
+      const optArray = opt.split('');
+      optArray.splice(2, 0, ':');
+      return optArray.join('');
+    });
+    return formatted;
   }
 }
