@@ -51,6 +51,10 @@ export class InputTwo implements OnInit {
       event.preventDefault();
       this._selectPreviousIndex(inputElement);
     }
+
+    if (!this._isNumberKey(event.code)) {
+      event.preventDefault();
+    }
   }
 
   private _selectFirstIndex(el: HTMLInputElement): void {
@@ -96,5 +100,9 @@ export class InputTwo implements OnInit {
       el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
       return;
     }
+  }
+
+  private _isNumberKey(keyCode: string) {
+    return keyCode.includes('Digit');
   }
 }
