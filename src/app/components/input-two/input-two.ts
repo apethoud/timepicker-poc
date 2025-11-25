@@ -67,8 +67,9 @@ export class InputTwo implements OnInit {
       event.preventDefault();
     }
 
-    const firstDigitWillBeOne = event.key === '1' && this.selectedIndex === 0;
-    this._changeSecondDigitToValidValueIfFirstDigitWillBeOne(firstDigitWillBeOne, inputElement);
+    if (this.selectedIndex < 2) {
+      this._ensureHourStaysValid(this.selectedIndex, event.key, inputElement);
+    }
   }
 
   private _selectFirstIndex(el: HTMLInputElement): void {
@@ -139,6 +140,11 @@ export class InputTwo implements OnInit {
     }
 
     return false;
+  }
+
+  private _ensureHourStaysValid(selectedIndex: number, key: string, el: HTMLInputElement): void {
+    const firstDigitWillBeOne = key === '1' && selectedIndex === 0;
+    this._changeSecondDigitToValidValueIfFirstDigitWillBeOne(firstDigitWillBeOne, el);
   }
 
   private _changeSecondDigitToValidValueIfFirstDigitWillBeOne(
