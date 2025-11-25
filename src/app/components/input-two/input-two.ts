@@ -59,14 +59,16 @@ export class InputTwo implements OnInit {
       this._selectPreviousIndex(inputElement);
     }
 
-    if (
+    const notAValidNumber =
       !this._isNumberKey(event.code) ||
-      this._doesNumberInsertionResultInAnUnreconcilableInvalidTime(event.key, this.selectedIndex)
-    ) {
+      this._doesNumberInsertionResultInAnUnreconcilableInvalidTime(event.key, this.selectedIndex);
+
+    if (notAValidNumber) {
       event.preventDefault();
     }
 
-    // changeSecondDigitToValidValueIfFirstDigitIsChanged
+    const firstDigitWillBeOne = event.key === '1' && this.selectedIndex === 0;
+    this._changeSecondDigitToValidValueIfFirstDigitWillBeOne(firstDigitWillBeOne, inputElement);
   }
 
   private _selectFirstIndex(el: HTMLInputElement): void {
@@ -139,8 +141,27 @@ export class InputTwo implements OnInit {
     return false;
   }
 
-  //   First: Either 0 or 1
-  //   Second: 0-2 always, 3-9 if First is 0
-  //   Third: 0-5
-  //   Fourth: 0-9
+  private _changeSecondDigitToValidValueIfFirstDigitWillBeOne(
+    firstdigitWillBeOne: boolean,
+    el: HTMLInputElement
+  ) {
+    if (!firstdigitWillBeOne) {
+      return;
+    }
+
+    if (!this.inputControl.value) {
+      console.log('Error: No input value');
+      return;
+    }
+
+    if (parseInt(this.inputControl.value[1]) < 3) {
+      return;
+    }
+
+    const updatedValueArray = this.inputControl.value.split('');
+    updatedValueArray.splice(1, 1, '2');
+    const updatedValue = updatedValueArray.join('');
+    this.inputControl.setValue(updatedValue);
+    el.setSelectionRange(0, 1);
+  }
 }
