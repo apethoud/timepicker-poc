@@ -6,7 +6,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AsyncPipe } from '@angular/common';
-import { map, Observable, startWith } from 'rxjs';
+import { distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -25,13 +25,29 @@ import { map, Observable, startWith } from 'rxjs';
 export class App implements OnInit {
   myControl = new FormControl('');
   options: string[] = timeOptions;
-  filteredOptions?: Observable<string[]>;
+  filteredOptions?: string[];
 
   ngOnInit() {
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filter(value || ''))
-    );
+    const ctrl = this.myControl.valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((value: string | null) => {
+        this._handleValueChange(value);
+      });
+  }
+
+  private _handleValueChange(value: string | null) {
+    console.log('value: ', value);
+
+    if (value === null) {
+      return;
+    }
+
+    this.filteredOptions = this._filter(value);
+
+    // const formatted = this.formatEnteredValue(value) // add the colon
+    // if (formatted !== value) {
+    //   ctrl.setValue(formatted, { emitEvent: false }); // show it in the view without calling this function again
+    // }
   }
 
   private _filter(value: string): string[] {

@@ -7,5 +7,9 @@
 }
 
 .time-input {
-  font-size: 48px;
+  font-size: 24px;
+}
+
+.time-option {
+  font-size: 24px;
 }
