@@ -40,6 +40,19 @@ export class InputTwo implements OnInit {
     this._selectNextIndex(inputElement);
   }
 
+  handleKeyDown(event: KeyboardEvent) {
+    const inputElement = event.target as HTMLInputElement;
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this._selectNextIndex(inputElement);
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this._selectPreviousIndex(inputElement);
+    }
+  }
+
   private _selectFirstIndex(el: HTMLInputElement): void {
     this.selectedIndex = 0;
     el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
@@ -60,6 +73,26 @@ export class InputTwo implements OnInit {
 
     if ((this.selectedIndex = LAST_EDITABLE_INDEX)) {
       this.selectedIndex = 0;
+      el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
+      return;
+    }
+  }
+
+  private _selectPreviousIndex(el: HTMLInputElement): void {
+    if (this.selectedIndex === COLON_INDEX + 1) {
+      this.selectedIndex = this.selectedIndex - 2;
+      el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
+      return;
+    }
+
+    if (this.selectedIndex > 0) {
+      this.selectedIndex--;
+      el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
+      return;
+    }
+
+    if (this.selectedIndex === 0) {
+      this.selectedIndex = LAST_EDITABLE_INDEX;
       el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
       return;
     }
