@@ -1,27 +1,13 @@
-// export const timeOptions = [
-//   "0100",
-//   "0101",
-//   "0102",
-//   "0159",
-//   "0200",
-//   "0201"
-// ]
-
 const generateTimeOptions = () => {
-  return [
-    '0100',
-    '0101',
-    '0102',
-    '0103',
-    '0104',
-    '0105',
-    '0200',
-    '0202',
-    '0202',
-    '0203',
-    '0204',
-    '0205',
-  ];
+  const opts = [];
+  for (let i = 100; i < 1260; i++) {
+    const lastTwoDigits = i - Math.floor(i / 100) * 100;
+    if (lastTwoDigits > 59) {
+      continue;
+    }
+    opts.push(i.toString().length === 3 ? `0${i}` : `${i}`);
+  }
+  return opts;
 };
 
 export const timeOptions = generateTimeOptions();
