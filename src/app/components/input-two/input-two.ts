@@ -8,8 +8,6 @@ import { distinctUntilChanged } from 'rxjs';
 const COLON_INDEX = 2;
 const LAST_EDITABLE_INDEX = 4;
 
-// On select, highlight the first character in the string
-// On text change, the added character should replace the highlighted character, then the next character should be selected (skipping the colon)
 // On arrow key press (left or right only), the highlight should move to the appropriate adjacent character (skipping the colon)
 // Handle the backspace key press appropriately, undoing the previous change (if any) and moving the highlight to the previous character (skipping the colon)
 // Constrain the allowed characters for each index, such that the time is always valid:
@@ -28,13 +26,13 @@ const LAST_EDITABLE_INDEX = 4;
 export class InputTwo implements OnInit {
   readonly blankTime = '00:00';
   inputControl = new FormControl(this.blankTime);
-  selectedIndex: number | null = null;
+  selectedIndex: number = 0;
 
   ngOnInit() {}
 
   handleInputFocus(event: Event) {
     const inputElement = event.target as HTMLInputElement;
-    this._selectNextIndex(inputElement);
+    this._selectFirstIndex(inputElement);
   }
 
   handleInputInput(event: Event) {
@@ -42,13 +40,12 @@ export class InputTwo implements OnInit {
     this._selectNextIndex(inputElement);
   }
 
-  private _selectNextIndex(el: HTMLInputElement): void {
-    if (this.selectedIndex === null) {
-      this.selectedIndex = 0;
-      el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
-      return;
-    }
+  private _selectFirstIndex(el: HTMLInputElement): void {
+    this.selectedIndex = 0;
+    el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
+  }
 
+  private _selectNextIndex(el: HTMLInputElement): void {
     if (this.selectedIndex === COLON_INDEX - 1) {
       this.selectedIndex = this.selectedIndex + 2;
       el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
@@ -57,6 +54,12 @@ export class InputTwo implements OnInit {
 
     if (this.selectedIndex < LAST_EDITABLE_INDEX) {
       this.selectedIndex++;
+      el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
+      return;
+    }
+
+    if ((this.selectedIndex = LAST_EDITABLE_INDEX)) {
+      this.selectedIndex = 0;
       el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
       return;
     }
