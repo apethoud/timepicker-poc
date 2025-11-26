@@ -9,11 +9,6 @@ const COLON_INDEX = 2;
 const LAST_EDITABLE_INDEX = 4;
 
 // Handle the backspace key press appropriately, undoing the previous change (if any) and moving the highlight to the previous character (skipping the colon)
-// Constrain the allowed characters for each index, such that the time is always valid:
-//   First: Either 0 or 1
-//   Second: 0-2 always, 3-9 if First is 0
-//   Third: 0-5
-//   Fourth: 0-9
 
 @Component({
   selector: 'app-input-two',
@@ -59,13 +54,7 @@ export class InputTwo implements OnInit {
       this._selectPreviousIndex(inputElement);
     }
 
-    const notAValidNumber =
-      !this._isNumberKey(event.code) ||
-      this._doesNumberInsertionResultInAnUnreconcilableInvalidTime(event.key, this.selectedIndex);
-
-    if (notAValidNumber) {
-      event.preventDefault();
-    }
+    this._disallowNonNumericalInput(event);
 
     if (this.selectedIndex < 2) {
       this._ensureHourStaysValid(this.selectedIndex, event.key, inputElement);
@@ -119,6 +108,16 @@ export class InputTwo implements OnInit {
       this.selectedIndex = LAST_EDITABLE_INDEX;
       el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
       return;
+    }
+  }
+
+  private _disallowNonNumericalInput(event: KeyboardEvent) {
+    const notAValidNumber =
+      !this._isNumberKey(event.code) ||
+      this._doesNumberInsertionResultInAnUnreconcilableInvalidTime(event.key, this.selectedIndex);
+
+    if (notAValidNumber) {
+      event.preventDefault();
     }
   }
 
