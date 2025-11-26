@@ -143,8 +143,21 @@ export class InputTwo implements OnInit {
   }
 
   private _ensureHourStaysValid(selectedIndex: number, key: string, el: HTMLInputElement): void {
-    const firstDigitWillBeOne = key === '1' && selectedIndex === 0;
-    this._changeSecondDigitToValidValueIfFirstDigitWillBeOne(firstDigitWillBeOne, el);
+    const firstDigitWillBeOne = selectedIndex === 0 && key === '1';
+    const secondDigitWillBeGreaterThanTwo = selectedIndex === 1 && parseInt(key) > 2;
+
+    if (firstDigitWillBeOne) {
+      this._changeSecondDigitToValidValueIfFirstDigitWillBeOne(firstDigitWillBeOne, el);
+      return;
+    }
+
+    if (secondDigitWillBeGreaterThanTwo) {
+      this._changeFirstDigitToValidValueIfSecondDigitWillBeGreaterThanTwo(
+        secondDigitWillBeGreaterThanTwo,
+        el
+      );
+      return;
+    }
   }
 
   private _changeSecondDigitToValidValueIfFirstDigitWillBeOne(
@@ -169,5 +182,29 @@ export class InputTwo implements OnInit {
     const updatedValue = updatedValueArray.join('');
     this.inputControl.setValue(updatedValue);
     el.setSelectionRange(0, 1);
+  }
+
+  private _changeFirstDigitToValidValueIfSecondDigitWillBeGreaterThanTwo(
+    secondDigitWillBeGreaterThanTwo: boolean,
+    el: HTMLInputElement
+  ) {
+    if (!secondDigitWillBeGreaterThanTwo) {
+      return;
+    }
+
+    if (!this.inputControl.value) {
+      console.log('Error: No input value');
+      return;
+    }
+
+    if (parseInt(this.inputControl.value[0]) === 0) {
+      return;
+    }
+
+    const updatedValueArray = this.inputControl.value.split('');
+    updatedValueArray.splice(0, 1, '0');
+    const updatedValue = updatedValueArray.join('');
+    this.inputControl.setValue(updatedValue);
+    el.setSelectionRange(1, 2);
   }
 }
