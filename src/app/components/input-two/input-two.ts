@@ -8,8 +8,6 @@ import { distinctUntilChanged } from 'rxjs';
 const COLON_INDEX = 2;
 const LAST_EDITABLE_INDEX = 4;
 
-// Handle the backspace key press appropriately, undoing the previous change (if any) and moving the highlight to the previous character (skipping the colon)
-
 @Component({
   selector: 'app-input-two',
   imports: [RouterOutlet, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
@@ -126,7 +124,7 @@ export class InputTwo implements OnInit {
     this._selectPreviousIndex(el);
   }
 
-  private _disallowNonNumericalInput(event: KeyboardEvent) {
+  private _disallowNonNumericalInput(event: KeyboardEvent): void {
     const notAValidNumber =
       !this._isNumberKey(event.code) ||
       this._doesNumberInsertionResultInAnUnreconcilableInvalidTime(event.key, this.selectedIndex);
@@ -136,7 +134,7 @@ export class InputTwo implements OnInit {
     }
   }
 
-  private _isNumberKey(keyCode: string) {
+  private _isNumberKey(keyCode: string): boolean {
     return keyCode.includes('Digit');
   }
 
@@ -177,7 +175,7 @@ export class InputTwo implements OnInit {
   private _changeSecondDigitToValidValueIfFirstDigitWillBeOne(
     firstdigitWillBeOne: boolean,
     el: HTMLInputElement
-  ) {
+  ): void {
     if (!firstdigitWillBeOne) {
       return;
     }
@@ -201,7 +199,7 @@ export class InputTwo implements OnInit {
   private _changeFirstDigitToValidValueIfSecondDigitWillBeGreaterThanTwo(
     secondDigitWillBeGreaterThanTwo: boolean,
     el: HTMLInputElement
-  ) {
+  ): void {
     if (!secondDigitWillBeGreaterThanTwo) {
       return;
     }
