@@ -53,6 +53,9 @@ export class InputTwo implements OnInit {
     if (event.key === 'ArrowLeft') {
       this._selectPreviousIndex(inputElement);
     }
+    if (event.key === 'Backspace') {
+      this._handleBackspace(this.selectedIndex, this.inputControl, inputElement);
+    }
 
     this._disallowNonNumericalInput(event);
 
@@ -109,6 +112,18 @@ export class InputTwo implements OnInit {
       el.setSelectionRange(this.selectedIndex, this.selectedIndex + 1);
       return;
     }
+  }
+
+  private _handleBackspace(
+    selectedIndex: number,
+    inputControl: FormControl,
+    el: HTMLInputElement
+  ): void {
+    const updatedValueArray = inputControl.value.split('');
+    updatedValueArray.splice(selectedIndex, 1, '0');
+    const updatedValue = updatedValueArray.join('');
+    this.inputControl.setValue(updatedValue);
+    this._selectPreviousIndex(el);
   }
 
   private _disallowNonNumericalInput(event: KeyboardEvent) {
